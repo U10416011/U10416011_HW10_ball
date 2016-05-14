@@ -74,7 +74,7 @@ public class MultipleBounceBall extends Application {
         public void add() {
             Color color = new Color(Math.random(),
                     Math.random(), Math.random(), 0.5);
-            Ball ball = new Ball(30, 30, (int)(Math.random() * 19) + 2, color);
+            Ball ball = new Ball(30, 30, 10, color);
             balls.offer(ball);
             getChildren().add(ball);
         }
@@ -109,22 +109,45 @@ public class MultipleBounceBall extends Application {
         }
 
         protected void moveBall() {
+        	Ball ball2 = null;
             for (Node node: this.getChildren()) {
                 Ball ball = (Ball)node;
-                Ball ball2 = (Ball)node;
-                // Check boundaries
-                if (ball.getCenterX() < ball.getRadius() ||
-                        ball.getCenterX() > getWidth() - ball.getRadius()) {
-                    ball.dx *= -1; // Change ball move direction
-                }
-                if (ball.getCenterY() < ball.getRadius() ||
-                        ball.getCenterY() > getHeight() - ball.getRadius()) {
-                    ball.dy *= -1; // Change ball move direction
+                if(ball2 != null){//more than two ball
+                	
+                	// Check boundaries
+                    if (ball.getCenterX() < ball.getRadius() ||
+                            ball.getCenterX() > getWidth() - ball.getRadius()) {
+                        ball.dx *= -1; // Change ball move direction
+                    }
+                    if (ball.getCenterY() < ball.getRadius() ||
+                            ball.getCenterY() > getHeight() - ball.getRadius()) {
+                        ball.dy *= -1; // Change ball move direction
+                    }
+                    if(Math.pow(ball.getCenterX()- ball2.getCenterX(),2) + Math.pow(ball.getCenterY()- ball2.getCenterY(),2) <= Math.pow(ball.getRadius()+ball2.getRadius(),2)&&(ball.dx != ball2.dx||ball.dy != ball2.dy)){
+                    	//if collide
+                    	ball.dx *= -1;
+                    	ball.dy *= -1;
+                    	ball2.dx *= -1;
+                    	ball2.dy *= -1;
+                    }
+                    // Adjust ball position
+                    ball.setCenterX(ball.dx + ball.getCenterX());
+                    ball.setCenterY(ball.dy + ball.getCenterY());
+                }else{//only a ball
+                	if (ball.getCenterX() < ball.getRadius() ||
+                            ball.getCenterX() > getWidth() - ball.getRadius()) {
+                        ball.dx *= -1; // Change ball move direction
+                    }
+                    if (ball.getCenterY() < ball.getRadius() ||
+                            ball.getCenterY() > getHeight() - ball.getRadius()) {
+                        ball.dy *= -1; // Change ball move direction
+                    }
+                    ball.setCenterX(ball.dx + ball.getCenterX());
+                    ball.setCenterY(ball.dy + ball.getCenterY());
+                	ball2 = ball;
                 }
                 
-                // Adjust ball position
-                ball.setCenterX(ball.dx + ball.getCenterX());
-                ball.setCenterY(ball.dy + ball.getCenterY());
+                
             }
         }
     }
@@ -155,4 +178,8 @@ public class MultipleBounceBall extends Application {
         }
 
     }
+    public static void main (String[] args) {
+	    Application.launch(args);  
+
+	}
 }
